@@ -1,0 +1,25 @@
+version: '3'
+services:
+  schooleduapp-postgresql:
+    container_name: deliveryapp-postgresql
+    image: postgres:latest
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=deliveryapp
+    ports:
+      - "5432:5432"
+    restart: always
+
+  app:
+    build: .
+    volumes:
+      - .:/app
+      - ~/.m2:/root/.m2
+    working_dir: /app
+    command: mvn clean spring-boot:run -Dspring-boot.run.profiles=docker
+    depends_on:
+      - deliveryapp-postgresql
+    ports:
+      - 8087:8080
+      - 5055:5005
